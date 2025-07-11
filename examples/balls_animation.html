@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="dist/canvas-utils.min.js"></script>
+    <script>
+        let number = 100, offset_r = 10
+        const canvas = new Canvas();
+        function getRandomColor() {
+            return '#' + Math.floor(Math.random() * 16777215).toString(16);
+        }
+        function getRandomBall() {
+            return {
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                r: Math.random() * offset_r + 10,
+                mx: Math.random() * 4 - 2,
+                my: Math.random() * 4 - 2,
+                color: getRandomColor(),
+            };
+        }
+        let balls = Array.from({ length: number }, getRandomBall);
+        canvas.draw = function () {
+            for (let index = 0; index < balls.length; index++) {
+                const element = balls[index];
+                this.arc({
+                    center: [element.x, element.y],
+                    radius: element.r,
+                    color: element.color,
+                    type: 'fill',
+                });
+            }
+        }
+        function animate() {
+            // 更新位置 - 使用 mx 和 my 分别控制 x 和 y 方向
+            for (let index = 0; index < balls.length; index++) {
+                const element = balls[index];
+                element.x += element.mx;
+                element.y += element.my;
+                if (element.x + element.r > canvas.width || element.x - element.r < 0) {
+                    element.mx = -element.mx;
+                }
+                if (element.y + element.r > canvas.height || element.y - element.r < 0) {
+                    element.my = -element.my;
+                }
+            }
+
+            // 清除并重绘
+            canvas.clear();
+            canvas.draw();
+            canvas.render();
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="../dist/canvas-utils.min.js"></script>
+    <script>
+        const canvas = new Canvas()
+        canvas.draw = function (canvas, ctx) {
+            this.center({
+                yUp: true,
+                origin: ['50%', '50%']
+            })
+
+            // 绘制矩形：填充
+            this.rect({
+                position: [110, 110],
+                size: [100, 100],
+                color: 'yellow',
+                type: 'fill',
+                onClick: function () {
+                    console.log('点击了矩形');
+                }
+            });
+
+            this.rect({
+                position: [100, 100],
+                size: [100, 100],
+                color: 'red',
+                line: 5,
+                type: 'stroke'
+            });
+
+            // 绘制三角形：填充
+            this.triangle({
+                points: [[10, 10], [100, 10], [50, 100]],
+                color: 'red',
+                type: 'fill',
+                onClick: function () {
+                    console.log('点击了三角形');
+                }
+            });
+
+            // 绘制三角形：描边
+            this.triangle({
+                points: [[10, 10], [100, 10], [50, 100]],
+                color: 'yellow',
+                line: 5,
+                type: 'stroke'
+            });
+
+            // 绘制线条：实线
+            this.line({
+                a: [10, 300],
+                b: [200, 300],
+                color: 'red',
+                line: 5
+            });
+
+            // 绘制线条：虚线
+            this.line({
+                a: [10, 330],
+                b: [200, 330],
+                type: 'dash',
+                dash: [10, 15],
+                color: 'yellow',
+                line: 5
+            });
+
+            // 绘制圆弧：描边
+            this.arc({
+                center: [400, 200],
+                radius: 80,
+                startAngle: 0,
+                endAngle: Math.PI,
+                color: 'green',
+                line: 2,
+                type: 'stroke'
+            });
+
+            // 绘制半圆：填充
+            this.arc({
+                center: [400, 100],
+                radius: 80,
+                startAngle: 0,
+                endAngle: Math.PI,
+                color: 'yellow',
+                line: 2,
+                type: 'fill',
+                onClick: function () {
+                    console.log('点击了圆形');
+                }
+            });
+
+            this.text({ position: [300, 400] })
+
+            this.bezier()
+
+            this.image({
+                src: '2.png',
+                position: [600, 100],
+                size: [200, 100],
+                onClick: function () {
+                    console.log('点击了图片');
+                }
+            })
+        }
+        canvas.render()
+    </script>
+</body>
+
+</html>

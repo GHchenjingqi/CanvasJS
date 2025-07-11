@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+        }
+        .box{
+            position: fixed;
+            top: 0;
+            padding: 2rem;
+            border-radius: 0.2rem;
+            background-color: #fff;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+        }
+        .box .item{margin-right: 20px;}
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <div class="item">
+            <label for="pregress">线条粗细</label>
+            <input type="range" name="pregress" id="pregress" min="1" max="20" value="4" onchange="changeLineWidth(this.value)"></input>
+        </div>
+        <div class="item">
+            <label for="color">线条颜色</label>
+            <input type="color" name="color" id="color" value="red" onchange="changeColor(this.value)"></input>
+        </div>
+        
+        <button onclick="reset()">重绘</button>
+        <button onclick="save()">保存</button>
+    </div>
+    <script src="../dist/canvas-utils.min.js"></script>
+    <script>
+        const canvas = new Canvas();
+        const options = { lineWidth: 4, color: '#ff0000' }
+        document.querySelector('#color').value = options.color
+        canvas.drawingBoard({ ...options })
+
+        function changeLineWidth(val) {
+            let lineWidth = Number(val)
+            canvas.setDarwLineWidth(lineWidth)
+        }
+        function changeColor(color) {
+            canvas.setDarwColor(color)
+        }
+        function reset(){
+            canvas.clear()
+        }
+        function save(){
+            canvas.save()
+        }
+    </script>
+</body>
+
+</html>

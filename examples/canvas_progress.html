@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="../dist/canvas-utils.min.js"></script>
+    <script>
+        let progress = 0
+        // 值 0 - 100 => 0 - 2 * Math.PI
+        function valueToAngle(clampedValue) {
+            return  (clampedValue / 100) * 2 * Math.PI - Math.PI / 2;
+        }
+
+        const canvas = new Canvas();
+        function drawProgress() {
+            progress = progress > 100 ? 0 : progress + 1;
+            const  angle = valueToAngle(progress);
+            // 重绘图形
+            canvas.arc({
+                center: [canvas.width / 2, 400],
+                radius: 80,
+                startAngle: 0,
+                endAngle: Math.PI * 2,
+                color: '#ddd',
+                line: 2,
+                type: 'stroke'
+            });
+            canvas.arc({
+                center: [canvas.width / 2, 400],
+                radius: 80,
+                startAngle: - Math.PI / 2, // 弧线起始角度
+                endAngle: angle,
+                color: '#fff',
+                line: 10,
+                type: 'stroke'
+            });
+
+            canvas.text({
+                text: progress + '%',
+                fontSize: 40,
+                position: [canvas.width / 2 - 40, 390]
+            })
+        }
+        function animate() {
+            // 清除并重绘
+            canvas.clear();
+            drawProgress();
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+
+</html>

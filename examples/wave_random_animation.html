@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="../dist/canvas-utils.min.js"></script>
+    <script>
+        let count = 500, ecg_h = 300
+        const canvas = new Canvas();
+        function drawECG(data, offset = 0) {
+            const centerY = canvas.height / 2 / canvas.dpr - ecg_h / 2; // 屏幕中心Y坐标
+            const spacing = 5; // 每个点之间的X间隔
+
+            for (let i = 0; i < data.length - 1; i++) {
+                const x1 = i * spacing + offset;
+                const y1 = centerY + data[i];
+                const x2 = (i + 1) * spacing + offset;
+                const y2 = centerY + data[i + 1];
+
+                canvas.line({
+                    a: [x1, y1],
+                    b: [x2, y2],
+                    color: 'lime',
+                    line: 2
+                });
+            }
+        }
+        
+        let offset = 0; // 控制波形移动的偏移量
+        let data = Array.from({ length: count }, () => Math.random() * ecg_h - 10);
+
+        // 绘制心电图波形
+        function animate() {
+            data.push(Math.random() * ecg_h - 10);
+            data.shift();
+
+            canvas.clear(); 
+            canvas.drawGrid()
+
+            // 绘制心电图波形
+            drawECG(data, offset);
+            requestAnimationFrame(animate); // 循环动画
+        }
+        animate();
+    </script>
+</body>
+
+</html>

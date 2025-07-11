@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {  margin: 0; padding: 0; }
+        canvas {  display: block; width: 100vw; height: 100vh; background: #000;}
+    </style>
+</head>
+<body>
+       <script src="../dist/canvas-utils.min.js"></script>
+       <script>
+            const canvas = new Canvas()
+            const colors = ['blue','yellow', 'red' , 'green', 'orange', 'purple', 'pink', 'brown', 'gray', 'white']
+            let i = 0
+            canvas.draw = function (canvas, ctx) {
+                this.rect({
+                    position: [110, 110],
+                    size: [100, 100],
+                    color: colors[i],
+                    type: 'fill',
+                    onClick: function () {
+                        i = i> colors.length ? 0 : i+1
+                    }
+                })
+            }
+            function animate() {
+                canvas.clear();
+                canvas.draw(); 
+                requestAnimationFrame(animate);
+            }
+            animate();
+       </script>
+</body>
+</html>
