@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="dist/canvas-utils.min.js"></script>
+    <script>
+        const canvas = new Canvas();
+        let t = 'Hello Canvas!'
+        canvas.draw = function () {
+            this.text({
+                text: t,
+                fontSize: 80,
+                color: 'yellow',
+                position: [canvas.width / 2 - 198, 392]
+            })
+            this.text({
+                text: t,
+                fontSize: 80,
+                color: 'red',
+                position: [canvas.width / 2 - 200, 390]
+            })
+        }
+        canvas.render();
+    </script>
+</body>
+
+</html>
