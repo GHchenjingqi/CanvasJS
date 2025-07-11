@@ -1,6 +1,16 @@
 # Canvas Drawing Library
 A lightweight JavaScript library for drawing on HTML5 Canvas with intuitive APIs and interactive features.
 
+Support ESM, CJS, and IIFE.
+
+If you find it useful, please give me stars. I really hope to receive your suggestions or join in to make CanvasJS more compliant and user-friendly.
+
+
+
+NPM address: [https://www.npmjs.com/package/canvasbox](https://www.npmjs.com/package/canvasbox)
+
+Git address：[https://github.com/GHchenjingqi/CanvasJS](https://github.com/GHchenjingqi/CanvasJS)
+
 ## Features
 + 🎨 Draw various shapes (lines, rectangles, circles, triangles, text, images, Bezier curves)
 + 📏 Customizable coordinate system with Y-axis inversion support
@@ -12,7 +22,11 @@ A lightweight JavaScript library for drawing on HTML5 Canvas with intuitive APIs
 + 🔄 Responsive design that adapts to window resizing
 
 ## Installation
-
+### NPM
+```bash
+# https://www.npmjs.com/package/canvasbox
+npm install canvasbox
+```
 
 ## <font style="color:rgb(64, 64, 64);">Basic Usage</font>
 ### <font style="color:rgb(64, 64, 64);">Initialization</font>
@@ -25,6 +39,21 @@ const canvas = new Canvas('#my-canvas', (canvas, ctx) => {
 const canvas = new Canvas('#my-canvas', {
   // Optional configuration
 });
+```
+
+If you are using **Vue** or **React**, please ensure that the canvas tag element exists, otherwise the page will display 2 canvases.
+
+```javascript
+import Canvas from 'canvasbox'
+import { onMounted } from 'vue';
+
+onMounted(() => {
+  const canvas = new Canvas("#canvas")
+  canvas.drawingBoard({
+    lineWidth: 3,
+    color: 'red'
+  });
+})
 ```
 
 ### <font style="color:rgb(64, 64, 64);">Coordinate System</font>
@@ -148,7 +177,10 @@ canvas.drawGrid();
 
 ## <font style="color:rgb(64, 64, 64);">Examples</font>
 <font style="color:rgb(64, 64, 64);">Check out the </font><font style="color:rgb(59, 130, 246);">examples folder</font><font style="color:rgb(64, 64, 64);"> for complete usage examples.</font><font style="color:rgb(73, 73, 73);background-color:rgb(250, 250, 250);">  
-  
+</font>
+
+## <font style="color:rgb(17, 17, 17);">Keywords</font>
+[<font style="color:rgb(73, 73, 73);background-color:rgb(250, 250, 250);">Canvasbox</font>](https://www.npmjs.com/search?q=keywords:canvasbox)<font style="color:rgb(73, 73, 73);background-color:rgb(250, 250, 250);"> , CanvasJS  
 </font>
 
 <font style="color:rgb(73, 73, 73);background-color:rgb(250, 250, 250);"></font>
