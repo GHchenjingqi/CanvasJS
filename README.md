@@ -1,17 +1,19 @@
 # Canvas Drawing Library
+
 A lightweight JavaScript library for drawing on HTML5 Canvas with intuitive APIs and interactive features.
+
+Quickly draw basic shapes, create animations, electronic seals, and canvas functions based on Canvas.
 
 Support ESM, CJS, and IIFE.
 
 If you find it useful, please give me stars. I really hope to receive your suggestions or join in to make CanvasJS more compliant and user-friendly.
-
-
 
 NPM address: [https://www.npmjs.com/package/canvasbox](https://www.npmjs.com/package/canvasbox)
 
 Git address：[https://github.com/GHchenjingqi/CanvasJS](https://github.com/GHchenjingqi/CanvasJS)
 
 ## Features
+
 + 🎨 Draw various shapes (lines, rectangles, circles, triangles, text, images, Bezier curves)
 + 📏 Customizable coordinate system with Y-axis inversion support
 + 🖱 Interactive elements with click event handling
@@ -22,14 +24,18 @@ Git address：[https://github.com/GHchenjingqi/CanvasJS](https://github.com/GHch
 + 🔄 Responsive design that adapts to window resizing
 
 ## Installation
+
 ### NPM
+
 ```bash
 # https://www.npmjs.com/package/canvasbox
 npm install canvasbox
 ```
 
 ## <font style="color:rgb(64, 64, 64);">Basic Usage</font>
+
 ### <font style="color:rgb(64, 64, 64);">Initialization</font>
+
 ```javascript
 const canvas = new Canvas('#my-canvas', (canvas, ctx) => {
   // Your drawing code here
@@ -39,6 +45,7 @@ const canvas = new Canvas('#my-canvas', (canvas, ctx) => {
 const canvas = new Canvas('#my-canvas', {
   // Optional configuration
 });
+canvas.render()
 ```
 
 If you are using **Vue** or **React**, please ensure that the canvas tag element exists, otherwise the page will display 2 canvases.
@@ -57,6 +64,7 @@ onMounted(() => {
 ```
 
 ### <font style="color:rgb(64, 64, 64);">Coordinate System</font>
+
 ```javascript
 // Center the coordinate system (Y-axis points up)
 canvas.center({ yUp: true });
@@ -66,7 +74,9 @@ canvas.center({ origin: [50, '30%'] });
 ```
 
 ## <font style="color:rgb(64, 64, 64);">Drawing Methods</font>
+
 ### <font style="color:rgb(64, 64, 64);">Lines</font>
+
 ```javascript
 canvas.line({
   type: 'dash',       // 'solid' or 'dash'
@@ -79,6 +89,7 @@ canvas.line({
 ```
 
 ### <font style="color:rgb(64, 64, 64);">Rects</font>
+
 ```javascript
 canvas.rect({
   type: 'stroke',     // 'fill', 'stroke', or 'dash'
@@ -91,6 +102,7 @@ canvas.rect({
 ```
 
 ### Triangles
+
 ```javascript
 canvas.triangle({
   points: [[10, 10], [100, 10], [50, 100]],
@@ -103,6 +115,7 @@ canvas.triangle({
 ```
 
 ### <font style="color:rgb(64, 64, 64);">Circles/Arcs</font><font style="color:rgb(73, 73, 73);background-color:rgb(250, 250, 250);"></font>
+
 ```javascript
 canvas.arc({
   type: 'fill',
@@ -115,6 +128,7 @@ canvas.arc({
 ```
 
 ### <font style="color:rgb(64, 64, 64);">Text</font>
+
 ```javascript
 canvas.text({
   position: [100, 100],
@@ -128,6 +142,7 @@ canvas.text({
 ```
 
 ### <font style="color:rgb(64, 64, 64);">Images</font>
+
 ```javascript
 canvas.image({
   src: 'path/to/image.png',
@@ -139,6 +154,7 @@ canvas.image({
 ```
 
 ### <font style="color:rgb(64, 64, 64);">Freehand Drawing</font><font style="color:rgb(73, 73, 73);background-color:rgb(250, 250, 250);"></font>
+
 ```javascript
 // Enable drawing mode
 canvas.drawingBoard({
@@ -148,7 +164,9 @@ canvas.drawingBoard({
 ```
 
 ## <font style="color:rgb(64, 64, 64);">Advanced Features</font>
+
 ### <font style="color:rgb(64, 64, 64);">Event Handling</font><font style="color:rgb(73, 73, 73);background-color:rgb(250, 250, 250);"></font>
+
 ```javascript
 // Add clickable shape
 canvas.rect({
@@ -159,6 +177,7 @@ canvas.rect({
 ```
 
 ### <font style="color:rgb(64, 64, 64);">Exporting Canvas</font>
+
 ```javascript
 // Save as PNG
 canvas.save({
@@ -171,21 +190,39 @@ const dataURL = canvas.toDataURL('image/jpeg', 0.8);
 ```
 
 ### <font style="color:rgb(64, 64, 64);">Grid Display</font>
+
 ```javascript
 canvas.drawGrid();
 ```
 
 ## <font style="color:rgb(64, 64, 64);">Examples</font>
-<font style="color:rgb(64, 64, 64);">Check out the </font><font style="color:rgb(59, 130, 246);">examples folder</font><font style="color:rgb(64, 64, 64);"> for complete usage examples.</font><font style="color:rgb(73, 73, 73);background-color:rgb(250, 250, 250);">  
-</font>
+
+<font style="color:rgb(64, 64, 64);">Check out the </font><font style="color:rgb(59, 130, 246);">examples folder</font><font style="color:rgb(64, 64, 64);"> for complete usage examples.
+
+## Apis
+
+- clear()                  —— Used for cleaning canvas
+- center()                —— Used to change the origin point
+- render()               —— Used for rendering canvas
+- line()                    —— Used for drawing lines
+- rect()                    —— Used for drawing rectangles
+- triangle()              —— Used for drawing triangles
+- arc()                     —— Used for drawing arc
+- text()                    —— Used for drawing text
+- bezier()                —— Used for drawing bezier
+- image()                —— Used for drawing image
+- drawingBoard()   —— Used to create a drawing board
+- drawTextAlongArc() —— Used to create curved wrap around text
+- drawGrid()           —— Used to create a drawing grid
+- drawStar()            —— Used to create a drawing star
+- toDataURL()         —— Convert canvas content into a data URL
+- toBlob()                —— Convert canvas content to blob data
+- save()                    —— Save PNG and download
+
 
 ## <font style="color:rgb(17, 17, 17);">Keywords</font>
-[<font style="color:rgb(73, 73, 73);background-color:rgb(250, 250, 250);">Canvasbox</font>](https://www.npmjs.com/search?q=keywords:canvasbox)<font style="color:rgb(73, 73, 73);background-color:rgb(250, 250, 250);"> , CanvasJS  
+
+[<font style="color:rgb(73, 73, 73);background-color:rgb(250, 250, 250);">Canvasbox</font>](https://www.npmjs.com/search?q=keywords:canvasbox)<font style="color:rgb(73, 73, 73);background-color:rgb(250, 250, 250);"> , CanvasJS
 </font>
 
 <font style="color:rgb(73, 73, 73);background-color:rgb(250, 250, 250);"></font>
-
-
-
-
-

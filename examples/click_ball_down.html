@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="../dist/canvas-utils.min.js"></script>
+    <script>
+        const canvas = new Canvas();
+        let mouseP = [0, 0], arr = []
+
+        // 生成随机数组
+        function getRandowArr(len = 50, size = 10) {
+            return Array.from({ length: len }, () => {
+                return {
+                    radius: Math.random() * size + 2,
+                    center: [Math.random() * size * 20 + mouseP[0], Math.random() * size * 20 + mouseP[1]],
+                    color: `hsl(${Math.random() * 360}, 100%, 50%)`
+                }
+            })
+        }
+
+        window.addEventListener('click', (e) => {
+            mouseP = [e.clientX, e.clientY]
+            arr = getRandowArr(30)
+        })
+        function ani() {
+            canvas.clear()
+            if (arr.length > 0) {
+                for (let i = 0; i < arr.length; i++) {
+                    const { radius, center, color } = arr[i];
+                    if ( arr[i].radius > 0.1) {
+                        canvas.arc({
+                            center,
+                            radius,
+                            color,
+                        })
+                        // 缩小半径
+                        arr[i].radius = arr[i].radius > 0.1 ? arr[i].radius - 0.1 : 0
+                        // 移动圆心
+                        arr[i].center[0] = i % 2 === 0 ? arr[i].center[0] + 0.1 : arr[i].center[0] - 0.1
+                        arr[i].center[1] = arr[i].center[1] + 1
+                    }
+                }
+            }
+            requestAnimationFrame(ani)
+        }
+        ani()
+
+    </script>
+</body>
+
+</html>

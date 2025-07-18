@@ -1,6 +1,6 @@
 export class Canvas {
     constructor(canvas, draw) {
-        this.canvas = document.querySelector(canvas) || this.creatCanvas()
+        this.canvas = document.querySelector(canvas) || this._creatCanvas()
         this.ctx = this.canvas.getContext('2d')
         this.dpr = window.devicePixelRatio || 1
         this.width = this.canvas.clientWidth
@@ -28,7 +28,7 @@ export class Canvas {
         })
         this.canvas.addEventListener('click', this.handleClick.bind(this))
     }
-    creatCanvas() {
+    _creatCanvas() {
         let canvas = document.createElement('canvas')
         document.body.appendChild(canvas)
         return canvas
@@ -44,15 +44,6 @@ export class Canvas {
     _draw() {
         if (!this.draw) return
         this.draw.call(this, this.canvas, this.ctx)
-    }
-    render() {
-        try {
-            this.clear()
-            this.clearShapes()
-            this._draw()
-        } catch (e) {
-            throw new Error("Error in render function", e);
-        }
     }
     resetLineDash() {
         this.ctx.setLineDash([])
@@ -286,6 +277,7 @@ export class Canvas {
             strokeColor = 'black',
             fontSize = 20,
             fontFamily = 'Arial',
+            fontWeight = 'normal',
             align = 'left',
             baseline = 'top',
             type = 'fill'
@@ -293,7 +285,7 @@ export class Canvas {
 
         const [x, y] = position
 
-        this.ctx.font = `${fontSize}px ${fontFamily}`
+        this.ctx.font = `${fontWeight} ${fontSize}px ${fontFamily}`
         this.ctx.textAlign = align
         this.ctx.textBaseline = baseline
         if (this.yUp) {
@@ -376,6 +368,7 @@ export class Canvas {
             src,
             position = [0, 0],
             size = null,
+            opacity = 1,
             rotation = 0,
             anchor = [0.5, 0.5],
             onClick = null
@@ -396,7 +389,9 @@ export class Canvas {
             // 计算锚点偏移
             const offsetX = -drawWidth * anchorX
             const offsetY = -drawHeight * anchorY
+            this.ctx.globalAlpha = opacity; 
             this.ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight)
+            this.ctx.globalAlpha = 1; 
             this.ctx.restore()
 
             if (typeof onClick === 'function') {
@@ -634,6 +629,112 @@ export class Canvas {
             this.canvas.removeEventListener('mouseout', stopDraw);
         };
     }
+    /**
+     * 在Canvas上绘制沿圆弧排列的文字（电子印章效果）
+     * @param {Object} arcParams - 圆弧参数对象
+     *        {Array} arcParams.center - 圆心坐标 [x, y]
+     *        {number} arcParams.radius - 半径
+     *        {number} arcParams.startAngle - 起始角度(弧度)
+     *        {number} arcParams.endAngle - 结束角度(弧度)
+     * @param {string} text - 要绘制的文字
+     * @param {Object} [options] - 可选参数
+     *        {string} [options.font] - 字体样式，默认 '16px Arial'
+     *        {string} [options.color] - 文字颜色，默认 '#000'
+     *        {boolean} [options.inside] - 文字在圆弧内侧，默认 false(外侧)
+     *        {number} [options.charRotation] - 额外字符旋转角度(弧度)，默认 0
+     *        {boolean} [options.clockwise] - 文字顺逆时针排列，默认 true(顺时针)
+     */
+    drawTextAlongArc(arcParams, text, options = {}) {
+        // 设置默认选项
+        const {
+            font = '16px Arial',
+            fontWeight = 'normal',
+            color = 'red',
+            inside = false,
+            charRotation = 0,
+            clockwise = true // 新增参数，默认顺时针
+        } = options;
+
+        // 保存当前上下文状态
+        this.ctx.save();
+
+        // 设置字体和颜色
+        this.ctx.font = `${fontWeight} ${font}`;
+        this.ctx.fillStyle = color;
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'middle';
+
+        // 解构圆弧参数
+        const [centerX, centerY] = arcParams.center;
+        const radius = arcParams.radius;
+        let startAngle = arcParams.startAngle;
+        let endAngle = arcParams.endAngle;
+
+        // 根据顺时针/逆时针决定角度处理方式
+        if (clockwise) {
+            // 顺时针：确保endAngle > startAngle
+            if (endAngle < startAngle) {
+                [startAngle, endAngle] = [endAngle, startAngle];
+            }
+        } else {
+            // 逆时针：确保startAngle > endAngle
+            if (endAngle > startAngle) {
+                [startAngle, endAngle] = [endAngle, startAngle];
+            }
+        }
+
+        // 计算总弧度（取绝对值）
+        const totalAngle = Math.abs(endAngle - startAngle);
+
+        // 测量文本总宽度
+        const textWidth = this.ctx.measureText(text).width;
+
+        // 计算每个字符占用的角度
+        const anglePerChar = totalAngle / text.length;
+
+        // 计算基于半径的字符间距调整因子
+        // 确保文字不会超出圆弧范围
+        const spacingFactor = Math.min(1, (radius * totalAngle) / textWidth);
+        const adjustedAnglePerChar = anglePerChar * spacingFactor * (clockwise ? 1 : -1);
+
+        // 调整起始角度，使文字居中
+        const totalTextAngle = adjustedAnglePerChar * (text.length - 1);
+        const angleOffset = (totalAngle - Math.abs(totalTextAngle)) / 2 * (clockwise ? 1 : -1);
+        startAngle += angleOffset;
+
+        // 绘制每个字符
+        for (let i = 0; i < text.length; i++) {
+            const char = text[i];
+            const angle = startAngle + i * adjustedAnglePerChar;
+
+            // 计算字符位置
+            const charRadius = radius + (inside ? -15 : 15); // 稍微偏移使文字更清晰
+            const x = centerX + Math.cos(angle) * charRadius;
+            const y = centerY + Math.sin(angle) * charRadius;
+
+            // 计算旋转角度（始终朝向圆心）
+            let rotationAngle = angle + Math.PI / 2 + charRotation;
+            if (inside) {
+                rotationAngle += Math.PI; // 内侧文字翻转180度
+            }
+
+            // 保存当前状态
+            this.ctx.save();
+
+            // 移动到字符位置并旋转
+            this.ctx.translate(x, y);
+            this.ctx.rotate(rotationAngle);
+
+            // 绘制字符
+            this.ctx.fillText(char, 0, 0);
+
+            // 恢复状态
+            this.ctx.restore();
+        }
+
+        // 恢复上下文状态
+        this.ctx.restore();
+    }
     drawGrid() {
         this.ctx.save();
         for (let x = 0; x <= this.width; x += 20) {
@@ -652,6 +753,39 @@ export class Canvas {
                 line: 0.5,
             });
         }
+        this.ctx.restore();
+    }
+    /**
+     * 绘制五角星
+     * @param {number} x - 中心点X坐标
+     * @param {number} y - 中心点Y坐标
+     * @param {string} color - 星星颜色
+     * @param {number} size - 星星大小（外接圆半径）
+     */
+    drawStar(x, y, color, size) {
+        this.ctx.save();
+        this.ctx.fillStyle = color;
+        this.ctx.beginPath();
+
+        // 内外半径比例（标准的五角星比例）
+        const outerRadius = size;
+        const innerRadius = size * 0.382; // 黄金分割比例
+
+        for (let i = 0; i < 10; i++) {
+            const angle = Math.PI / 5 * i - Math.PI / 2;
+            const radius = i % 2 === 0 ? outerRadius : innerRadius;
+            const px = x + radius * Math.cos(angle);
+            const py = y + radius * Math.sin(angle);
+
+            if (i === 0) {
+                this.ctx.moveTo(px, py);
+            } else {
+                this.ctx.lineTo(px, py);
+            }
+        }
+
+        this.ctx.closePath();
+        this.ctx.fill();
         this.ctx.restore();
     }
     toDataURL(mimeType, quality) {
@@ -686,6 +820,16 @@ export class Canvas {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+    }
+
+    render() {
+        try {
+            this.clear()
+            this.clearShapes()
+            this._draw()
+        } catch (e) {
+            throw new Error("Error in render function", e);
+        }
     }
 }
 window.Canvas = Canvas;

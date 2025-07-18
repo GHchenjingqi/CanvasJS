@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="../dist/canvas-utils.min.js"></script>
+    <script>
+        // 创建点线
+        let ballNumber = 200, ballMaxDistance = 100
+        // 鼠标临近，推开点线
+        let mouseX = 0, mouseY = 0, mouseDistance = 100;
+        const canvas = new Canvas();
+        function creatballs(number) {
+            return Array.from({ length: number }, (_, index) => {
+                return {
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    r: Math.random() * 1 + 2,
+                    speedY: index % 2 === 0 ? Math.random() * 0.2 + 0.1 : Math.random() * 0.2 - 0.1,
+                    speedX: index % 2 === 0 ? Math.random() * 0.2 - 0.1 : Math.random() * 0.2 + 0.1,
+                    color: 'rgba(255,255,255,0.5)'
+                }
+            })
+        }
+        function pointsDistance(x1, y1, x2, y2) {
+            const dx = x2 - x1; // x 轴方向差值
+            const dy = y2 - y1; // y 轴方向差值
+            return Math.sqrt(dx * dx + dy * dy); // 勾股定理计算距离
+        }
+
+        const balls = creatballs(ballNumber)
+        canvas.draw = function () {
+            // 绘制小球
+            for (let i = 0; i < balls.length; i++) {
+                const p1 = balls[i];
+                this.arc({
+                    center: [p1.x, p1.y],
+                    radius: p1.r,
+                    color: p1.color
+                })
+                // 点之间画线
+                for (let j = i + 1; j < balls.length; j++) {
+                    const p2 = balls[j];
+                    // 距离判断
+                    let dis = pointsDistance(p1.x, p1.y, p2.x, p2.y)
+                    // 距离决定颜色
+                    let op = (ballMaxDistance - dis) / ballMaxDistance
+                    if (dis < ballMaxDistance && op > 0.1) {
+                        this.line({
+                            a: [p1.x, p1.y],
+                            b: [p2.x, p2.y],
+                            color: `rgba(255,255,255,${op})`
+                        })
+                    }
+                }
+            }
+        }
+
+        function ani() {
+            // 移动位置
+            balls.forEach(function (ball,idx) {
+                ball.y += ball.speedY;
+                ball.x += ball.speedX;
+
+                // 边界处理
+                if (ball.y > canvas.height) ball.y = 0;
+                if (ball.y < 0) ball.y = canvas.height;
+                if (ball.x > canvas.width) ball.x = 0;
+                if (ball.x < 0) ball.x = canvas.width;
+
+                // 鼠标临近点，移动点位置
+                if( pointsDistance(ball.x, ball.y,mouseX,mouseY ) < mouseDistance){
+                    ball.speedX = (ball.x - mouseX) / 100;
+                    ball.speedY = (ball.y - mouseY) / 100;
+                }else{
+                    ball.speedX = idx % 2 === 0 ? Math.random() * 0.2 + 0.1 : Math.random() * 0.2 - 0.1
+                    ball.speedY = idx % 2 === 0 ? Math.random() * 0.2 - 0.1 : Math.random() * 0.2 + 0.1
+                }
+            });
+
+            canvas.render();
+            requestAnimationFrame(ani);
+        }
+        ani()
+
+        // 注册鼠标移动事件
+        document.onmousemove = function (event) {
+            mouseX = event.clientX;
+            mouseY = event.clientY;
+        }
+
+    </script>
+</body>
+
+</html>

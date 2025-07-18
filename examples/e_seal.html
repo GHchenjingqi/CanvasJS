@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+    <script src="../dist/canvas-utils.min.js"></script>
+    <script>
+        const canvas = new Canvas("#canvas",()=>{
+            // 外圆
+            canvas.arc({
+                type: 'stroke',
+                center: [150, 150],
+                radius: 100,
+                startAngle: 0,
+                endAngle: Math.PI * 2,
+                line:1.5,
+                color: 'red'
+            });
+            // 内圆
+            canvas.arc({
+                type: 'stroke',
+                center: [150, 150],
+                radius: 130,
+                startAngle: 0,
+                endAngle: Math.PI * 2,
+                line:3,
+                color: 'red'
+            });
+            // 上文字
+            canvas.drawTextAlongArc({
+                center: [150, 150],
+                radius: 100,
+                startAngle: 0,
+                endAngle: -Math.PI
+            },"新东方厨师培训高级技工学校",{
+                fontWeight: 600
+            });
+            // 下文字
+            canvas.drawTextAlongArc({
+                center: [150, 150],
+                radius: 100,
+                startAngle: Math.PI / 5,
+                endAngle: Math.PI * 4 / 5,
+            },"123145647",{ 
+                clockwise: false,  // 逆时针
+                charRotation: Math.PI  // 文字旋转
+             });
+
+            // 五角星
+            canvas.drawStar(150, 130, 'red', 60);
+            // 文字
+            canvas.text({
+                position: [115, 200],
+                text: '专用章',
+                color: 'red',
+                fontSize: 24,
+                fontWeight: 'bold'
+            })
+        });
+        canvas.render();
+    </script>
+</body>
+
+</html>

@@ -1,6 +1,6 @@
 {
   "name": "canvasbox",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "A lightweight JavaScript library for drawing on HTML5 Canvas with intuitive APIs and interactive features.",
   "main": "src/main.js",
   "type": "module",
