@@ -44,7 +44,7 @@
             });
         }
         async function initsnow() {
-            const snowImage = await loadImage('examples/images/snow.png');
+            const snowImage = await loadImage('./images/snow.png');
             for (let i = 0; i < snowNum; i++) {
                 const flake = createSnowflake();
                 flake.img = snowImage; 

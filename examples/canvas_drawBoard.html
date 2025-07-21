@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,7 +18,7 @@
         .box{
             position: fixed;
             top: 0;
-            padding: 2rem;
+            padding:0.4rem 1rem;
             border-radius: 0.2rem;
             background-color: #fff;
             left: 50%;
@@ -27,23 +26,22 @@
             display: flex;
             align-items: center;
         }
-        .box .item{margin-right: 20px;}
+        .box .item{margin-right: 10px;font-size: 12px;}
     </style>
 </head>
 
 <body>
     <div class="box">
         <div class="item">
-            <label for="pregress">线条粗细</label>
+            <label for="pregress">lineWidth</label>
             <input type="range" name="pregress" id="pregress" min="1" max="20" value="4" onchange="changeLineWidth(this.value)"></input>
         </div>
         <div class="item">
-            <label for="color">线条颜色</label>
+            <label for="color">lineColor</label>
             <input type="color" name="color" id="color" value="red" onchange="changeColor(this.value)"></input>
         </div>
-        
-        <button onclick="reset()">重绘</button>
-        <button onclick="save()">保存</button>
+        <button onclick="reset()">redraw</button>
+        <button onclick="save()">save</button>
     </div>
     <script src="../dist/canvas-utils.min.js"></script>
     <script>

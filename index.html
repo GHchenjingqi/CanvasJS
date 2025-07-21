@@ -9,18 +9,43 @@
         body {
             margin: 0;
             padding: 0;
+            background: #333;
         }
-
         canvas {
             display: block;
             width: 100vw;
-            height: 100vh;
-            background: #000;
+            height: 28vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+        .wrap{
+            margin-top: 28vh;
+            width: 1800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        iframe{
+            width: 300px;
+            height: 300px;
+            border: 1px solid #444;
+            box-sizing: border-box;
+            float: left;
         }
     </style>
 </head>
 
 <body>
+    <div class="wrap">
+        <iframe src="./examples/balls_animation.html" frameborder="0"></iframe>
+        <iframe src="./examples/e_seal.html" frameborder="0"></iframe>
+        <iframe src="./examples/wave_random_animation.html" frameborder="0"></iframe>
+        <iframe src="./examples/snowing_ball.html" frameborder="0"></iframe>
+        <iframe src="./examples/snowing_flower.html" frameborder="0"></iframe>
+        <iframe src="./examples/points_line_animation.html" frameborder="0"></iframe>
+        <iframe style="width: 900px;height: 380px;"  src="./examples/canvas_drawBoard.html" frameborder="0"></iframe>
+        <iframe style="width: 900px;height: 380px;"  src="./examples/click_ball_down.html" frameborder="0"></iframe>
+    </div>
     <script src="dist/canvas-utils.min.js"></script>
     <script>
         const canvas = new Canvas();
@@ -30,13 +55,13 @@
                 text: t,
                 fontSize: 80,
                 color: 'yellow',
-                position: [canvas.width / 2 - 198, 392]
+                position: [canvas.width / 2 - 198, 100]
             })
             this.text({
                 text: t,
                 fontSize: 80,
                 color: 'red',
-                position: [canvas.width / 2 - 200, 390]
+                position: [canvas.width / 2 - 200, 102]
             })
         }
         canvas.render();
