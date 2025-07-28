@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #333;
+        }
+
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="../dist/canvas-utils.min.js"></script>
+    <script>
+        let snowflakes = [], snowNum = 1000
+        const canvas = new Canvas();
+        function createSnowflake() {
+            return {
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height, // 从屏幕上方掉落
+                size: Math.random() * 1.5 + 1,
+                speedY: 0,
+                speedX: 0,
+                maxSpeed: 0.3,
+                opacity: Math.random() * 1   // 透明度
+            };
+        }
+        function initsnow() {
+            for (let i = 0; i < snowNum; i++) {
+                snowflakes.push(createSnowflake())
+            }
+        }
+        initsnow()
+        canvas.draw = function () {
+            for (let i = 0; i < snowflakes.length; i++) {
+                const { x, y, size, opacity } = snowflakes[i];
+                canvas.arc({
+                    type: "fill",
+                    center: [x, y],
+                    radius: size,
+                    color: `rgba(255, 255, 255, ${opacity})`
+                })
+            }
+        }
+        let lastMousePos = { x: 0, y: 0 }; // 记录上一次鼠标位置
+        let currentMousePos = { x: 0, y: 0 }; // 当前鼠标位置
+        let isMouseInWindow = true
+        // 鼠标移动事件处理函数
+        function onMouseMove(event) {
+            if (!isMouseInWindow) return; // 鼠标不在窗口内时直接返回
+
+            lastMousePos = { ...currentMousePos };
+            currentMousePos = { x: event.clientX, y: event.clientY };
+
+            const baseSpeedX = (currentMousePos.x - lastMousePos.x) * 0.1;
+            const baseSpeedY = (currentMousePos.y - lastMousePos.y) * 0.1;
+
+            snowflakes.forEach(function (ball) {
+                // 在基础速度上添加一些随机性
+                ball.speedX = baseSpeedX + (Math.random() - 0.5) * 0.2; // 调整这里的系数来控制随机性的大小
+                ball.speedY = baseSpeedY + (Math.random() - 0.5) * 0.2;
+
+                // 限制最大速度
+                const speedLength = Math.sqrt(ball.speedX ** 2 + ball.speedY ** 2);
+                if (speedLength > ball.maxSpeed) {
+                    ball.speedX *= ball.maxSpeed / speedLength;
+                    ball.speedY *= ball.maxSpeed / speedLength;
+                }
+            });
+        }
+
+        // 监听鼠标移动事件
+        window.addEventListener('mousemove', onMouseMove);
+        window.addEventListener('mouseout', () => {
+            // 恢复初始化速度
+             snowflakes.forEach(function (snowflake) {
+                snowflake.speedY = 0
+                snowflake.speedX = 0
+             })
+
+            isMouseInWindow = false;
+        });
+
+        window.addEventListener('mouseover', () => {
+            isMouseInWindow = true;
+        });
+
+        function animate() {
+            // 更改数据
+            snowflakes.forEach(function (snowflake) {
+                snowflake.y += snowflake.speedY;
+                snowflake.x += snowflake.speedX;
+                // 边界处理
+                if (snowflake.y > canvas.height) {
+                    snowflake.y = -snowflake.size;
+                }
+                if (snowflake.x > canvas.width) {
+                    snowflake.x = 0;
+                } else if (snowflake.x < 0) {
+                    snowflake.x = canvas.width;
+                }
+            })
+
+
+            canvas.render()
+            requestAnimationFrame(animate)
+        }
+        animate()
+    </script>
+</body>
+
+</html>

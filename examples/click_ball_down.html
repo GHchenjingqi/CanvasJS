@@ -36,7 +36,11 @@
                 }
             })
         }
-
+        function init(){
+            mouseP = [canvas.width / 2 , canvas.height / 2]
+            arr = getRandowArr(30)
+        }
+        init()
         window.addEventListener('click', (e) => {
             mouseP = [e.clientX, e.clientY]
             arr = getRandowArr(30)

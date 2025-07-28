@@ -50,6 +50,9 @@ var Canvas = class {
 	resetLineDash() {
 		this.ctx.setLineDash([]);
 	}
+	setBackgroud(color) {
+		this.canvas.style.backgroundColor = color;
+	}
 	/**
 	
 	* 将坐标系原点移动到指定位置，并可选择是否翻转Y轴

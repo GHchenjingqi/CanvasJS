@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #333;
+        }
+
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="../dist/canvas-utils.min.js"></script>
+    <script>
+        const canvas  = new Canvas()
+        const ctx = canvas.ctx
+        // 每个代码流的数组
+        const charset = "01abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$#@%&*()[]{}<>?/\\|~^=+-_";
+        const streams = [];
+        const streamCount = 128;
+        const columns = Math.floor(canvas.width / 12);
+
+        let speed = 5;
+        let color = '#0f0';
+
+        function getRandomChar(){
+             return charset[Math.floor(Math.random() * charset.length)];
+        }
+        function initStreams(){
+            for (let i = 0; i < streamCount; i++) {
+                const x = Math.floor(Math.random() * columns) * 12;
+                const y = Math.random() * canvas.height;
+
+                let chars = []
+                let len = Math.floor(Math.random() * 20) + 10
+                for (let j = 0; j < len; j++) {
+                    chars.push({
+                        char: getRandomChar(),
+                        opacity: j === 0 ? 1 : 1 - (j / len)
+                    });
+                }
+                streams.push({
+                    x,
+                    y,
+                    speed: Math.random() * 5 + speed,
+                    length: len,
+                    chars
+                });
+            }
+        }
+        initStreams()
+
+        canvas.draw = function (canvas, ctx) { 
+            for(let a = 0; a < streams.length; a++){
+                let stream = streams[a];
+                for (let i = 0; i < stream.chars.length; i++) {
+                    const charY = stream.y - i * 12;
+                    
+                    if (charY > 0 && charY < canvas.height) {
+                        // 第一个字符最亮
+                        const opacity = i === 0 ? 1 : stream.chars[i].opacity;
+                        
+                        // 绘制字符
+                        ctx.font = `12px 'Courier New', monospace`;
+                        ctx.fillStyle = i === 0 ? color : `rgba(0, 255, 0, ${opacity * 0.7})`;
+                        
+                        // 第一个字符添加发光效果
+                        if (i === 0) {
+                            ctx.shadowBlur = 10;
+                            ctx.shadowColor = color;
+                        }
+                        
+                        ctx.fillText(stream.chars[i].char, stream.x, charY);
+                        // 重置阴影
+                        ctx.shadowBlur = 0;
+                    }
+                }
+            }
+        }
+
+        function updated(){ 
+            for (let index = 0; index < streams.length; index++) {
+                const element = streams[index];
+                
+                // 移动流
+                element.y += element.speed;
+                
+                // 随机改变字符
+                if (Math.random() > 0.95) {
+                    for (let i = 0; i < element.chars.length; i++) {
+                        if (Math.random() > 0.8) {
+                            element.chars[i].char = getRandomChar();
+                        }
+                    }
+                }
+                
+                // 重置流位置
+                if (element.y > canvas.height + element.length * 12) {
+                    element.y = -Math.random() * 100;
+                    element.x = Math.floor(Math.random() * columns) * 12;
+                    element.speed = Math.random() * 5 + speed;
+                }
+            }
+
+        }
+        function ani(){
+            updated()
+            canvas.render()
+            requestAnimationFrame(ani)
+        }
+        ani()
+    </script>
+</body>
+
+</html>

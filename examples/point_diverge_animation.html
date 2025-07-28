@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #333;
+        }
+
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="../dist/canvas-utils.min.js"></script>
+    <script>
+        const canvas = new Canvas();
+        const ctx = canvas.ctx;
+        // 粒子数组
+        const particles = [];
+        const particleCount = 500;
+        let speed = 0.75;  // 速度因子 (0-1)
+        let size = 10;
+        let warpEffect = true;  // 扭曲效果开关
+
+        // 改进的颜色生成函数 - 多彩版本
+        function generateColor() {
+            // 定义多种颜色方案
+            const colorSchemes = [
+                // 蓝色系
+                () => {
+                    const hue = Math.floor(Math.random() * 60 + 200);
+                    const saturation = 100;
+                    const lightness = Math.floor(Math.random() * 30 + 70);
+                    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+                },
+                // 紫色系
+                () => {
+                    const hue = Math.floor(Math.random() * 60 + 270);
+                    const saturation = 100;
+                    const lightness = Math.floor(Math.random() * 30 + 70);
+                    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+                },
+                // 红色/橙色系
+                () => {
+                    const hue = Math.floor(Math.random() * 60 + 0);
+                    const saturation = 100;
+                    const lightness = Math.floor(Math.random() * 30 + 70);
+                    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+                },
+                // 青色/绿色系
+                () => {
+                    const hue = Math.floor(Math.random() * 60 + 120);
+                    const saturation = 100;
+                    const lightness = Math.floor(Math.random() * 30 + 70);
+                    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+                },
+                // 粉色系
+                () => {
+                    const hue = Math.floor(Math.random() * 30 + 320);
+                    const saturation = 100;
+                    const lightness = Math.floor(Math.random() * 30 + 70);
+                    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+                }
+            ];
+
+            return colorSchemes[Math.floor(Math.random() * colorSchemes.length)]();
+        }
+
+        // 初始化粒子
+        function initParticles() {
+            particles.length = 0;
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width - canvas.width / 2,
+                    y: Math.random() * canvas.height - canvas.height / 2,
+                    z: Math.random() * canvas.width,
+                    size: Math.random() * size + 1,
+                    color: generateColor()
+                });
+            }
+        }
+        initParticles()
+
+        // 绘制单个粒子
+        function drawParticle(x, y, scale, p) {
+            const particleSize = Math.max(0.5, p.size * scale * 0.5);
+
+            ctx.beginPath();
+            ctx.arc(x, y, particleSize, 0, Math.PI * 2);
+
+            // 创建径向渐变模拟发光效果
+            const gradient = ctx.createRadialGradient(
+                x, y, 0,
+                x, y, particleSize * 2
+            );
+
+            // 使用HSLA颜色确保透明度正确
+            const baseColor = p.color;
+            const midColor = baseColor.replace('%)', '%, 0.8)').replace('hsl', 'hsla');
+            const edgeColor = baseColor.replace('%)', '%, 0.2)').replace('hsl', 'hsla');
+
+            gradient.addColorStop(0, baseColor);
+            gradient.addColorStop(0.4, midColor);
+            gradient.addColorStop(1, edgeColor);
+
+            ctx.fillStyle = gradient;
+            ctx.fill();
+        }
+
+
+
+        // 绘制粒子
+        function drawParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 计算透视变换中心
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            // 绘制光速粒子
+            particles.forEach(p => {
+                // 移动粒子（Z轴移动）
+                p.z -= speed * 20;
+
+                // 如果粒子飞出视野，重置粒子
+                if (p.z < 1) {
+                    p.x = Math.random() * canvas.width - canvas.width / 2;
+                    p.y = Math.random() * canvas.height - canvas.height / 2;
+                    p.z = canvas.width;
+                    p.size = Math.random() * size + 1;
+                    p.color = generateColor();
+                }
+
+                // 计算透视投影
+                const scale = 200 / p.z;
+                const x = centerX + p.x * scale;
+                const y = centerY + p.y * scale;
+
+                // 应用相对论光行差效果（当开启扭曲效果时）
+                if (warpEffect && speed > 0.5) {
+                    const warpFactor = Math.min(1, (speed - 0.5) * 2);
+                    const dx = x - centerX;
+                    const dy = y - centerY;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    const angle = Math.atan2(dy, dx);
+
+                    // 应用扭曲 - 靠近屏幕中心的粒子被拉长
+                    const warpDistortion = warpFactor * (1 - distance / (canvas.width / 2)) * 0.5;
+                    const warpX = warpDistortion * Math.cos(angle) * 150;
+                    const warpY = warpDistortion * Math.sin(angle) * 150;
+
+                    // 绘制粒子
+                    drawParticle(x + warpX, y + warpY, scale, p);
+                } else {
+                    // 绘制普通粒子
+                    drawParticle(x, y, scale, p);
+                }
+            });
+        }
+
+        function ani() {
+            drawParticles();
+            requestAnimationFrame(ani)
+        }
+        ani()
+
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowUp') {
+                speed = Math.min(0.98, speed + 0.05);
+            } else if (e.key === 'ArrowDown') {
+                speed = Math.max(0.1, speed - 0.05);
+            }
+        });
+    </script>
+</body>
+
+</html>

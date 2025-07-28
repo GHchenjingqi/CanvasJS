@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #333;
+        }
+
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="../dist/canvas-utils.min.js"></script>
+    <script>
+        const canvas = new Canvas();
+        const cas = canvas.canvas;
+        const ctx = canvas.ctx;
+        let rays = []; // 射线数组
+        const rayCount = 100; // 射线数量（越多越密集）
+        let centerX = canvas.width / 2; // 初始中心X
+        let centerY = canvas.height / 2; // 初始中心Y
+        const maxRayLength = Math.min(canvas.width, canvas.height) * 0.5; // 射线最大长度（避免超出屏幕） 
+
+        function init() {
+            for (let i = 0; i < rayCount; i++) {
+                rays.push({
+                    centerX: centerX, // 射线起点（中心）
+                    centerY: centerY,
+                    angle: Math.random() * Math.PI * 2,// 随机角度
+                    length: 0, // 初始长度（从0开始“生长”）
+                    speed: 2 + Math.random() * 5, // 射线延伸速度
+                    width: 1, // 射线宽度（可动态变化）
+                    // 随机颜色（彩色射线效果）
+                    color: `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`,
+                    alpha: 0.2, // 透明度（可动态调整）
+                });
+            }
+        }
+        init()
+
+        canvas.draw = function () {
+            for (let i = 0; i < rays.length; i++) {
+                let ray = rays[i];
+                const endX = ray.centerX + Math.cos(ray.angle) * ray.length;
+                const endY = ray.centerY + Math.sin(ray.angle) * ray.length;
+                canvas.line({
+                    a: [ray.centerX, ray.centerY],
+                    b: [endX, endY],
+                    color: `rgba(${ray.color.slice(4, -1)}, ${ray.alpha})`,
+                    line: ray.width
+                })
+            }
+        };
+        cas.addEventListener('click', (e) => {
+            centerX = e.clientX;
+            centerY = e.clientY;
+            // 重置所有射线的中心
+            rays.forEach(ray => {
+                ray.centerX = centerX;
+                ray.centerY = centerY;
+                ray.length = 0;
+                ray.angle = Math.random() * Math.PI * 2; // 重新随机角度
+                ray.color = `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`;
+            });
+        });
+
+        function update() {
+            for (let i = 0; i < rays.length; i++) {
+                let ray = rays[i];
+                ray.length += ray.speed; // 射线向外延伸
+                // 随长度增加，动态调整宽度（越远越细，增强透视）
+                ray.width = 2 - (ray.length * 0.005);
+                // 随长度增加，动态调整透明度（越远越透明）
+                ray.alpha = 0.8 - (ray.length * 0.001);
+
+                // 射线超出范围后，重置（重新从中心生长）
+                if (ray.length > maxRayLength) {
+                    ray.length = 0;
+                    ray.angle = Math.random() * Math.PI * 2; // 重新随机角度
+                    ray.color = `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`;
+                }
+            }
+        }
+
+
+        function ani() {
+            canvas.render();
+            update()
+
+            requestAnimationFrame(ani)
+        }
+        ani()
+    </script>
+</body>
+
+</html>

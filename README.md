@@ -219,10 +219,9 @@ canvas.drawGrid();
 - toBlob()                —— Convert canvas content to blob data
 - save()                    —— Save PNG and download
 
-
 ## <font style="color:rgb(17, 17, 17);">Keywords</font>
 
-[<font style="color:rgb(73, 73, 73);background-color:rgb(250, 250, 250);">Canvasbox</font>](https://www.npmjs.com/search?q=keywords:canvasbox)<font style="color:rgb(73, 73, 73);background-color:rgb(250, 250, 250);"> , CanvasJS
+[<font style="color:rgb(73, 73, 73);background-color:rgb(250, 250, 250);">Canvasbox</font>](https://www.npmjs.com/search?q=keywords:canvasbox)<font style="color:rgb(73, 73, 73);background-color:rgb(250, 250, 250);"> , CanvasJS, Electronic seals
 </font>
 
 <font style="color:rgb(73, 73, 73);background-color:rgb(250, 250, 250);"></font>
