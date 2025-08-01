@@ -1,12 +1,23 @@
 {
   "name": "canvasbox",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A lightweight JavaScript library for drawing on HTML5 Canvas with intuitive APIs and interactive features.",
   "main": "src/main.js",
   "type": "module",
   "scripts": {
     "build": "rolldown --config rolldown.config.js"
   },
+  "keywords": [
+    "canvasbox",
+    "CanvasJS",
+    "canvas animation",
+    "Electronic seals",
+    "seals",
+    "canvas toDataURL",
+    "canvas toBlob",
+    "canvas animation",
+    "HTML5 Canvas"
+  ],
   "author": "",
   "license": "ISC"
 }
