@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            background-color: #333;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <script src="../../dist/canvas-utils.min.js"></script>
+    <script>
+        const canvas = new Canvas();
+
+        const getPoint = (x, y, deg, lineLength = 100) => {
+            return [x + Math.cos(deg) * lineLength, y + Math.sin(deg) * lineLength]
+        }
+
+        const getRandomAngle = (min = -60, max = -120) => {
+            let num = Math.random() * (max - min) + min
+            return Math.PI / 180 * num
+        }
+        const getRandomFrom = (min = 50, max = 100) => {
+            return Math.random() * (max - min) + min
+        }
+        const getRandomColor = () => {
+            let r = Math.floor(Math.random() * 255)
+            let g = Math.floor(Math.random() * 255)
+            let b = Math.floor(Math.random() * 255)
+            return `rgb(${r}, ${g}, ${b})`
+        }
+
+        let line = 100,
+            maxLevel = 5, // 分叉层数
+            number = 2, // 分叉数量
+            idx = 0, // 初始角度
+            startPoint = [150, 300], // 起始位置
+            curpoints = [], // 当前分叉起始点
+            color = '#fff', // 分叉颜色
+            lastPoint = [], // 最后一个节点
+            lastPoints = [] // 最后一个节点集合
+
+        canvas.draw = function (_, ctx) {
+            let that = this
+            that.drawGrid()
+            lastPoints = []
+            startPoint = [150, 300]
+            color = '#fff'
+            
+            while (maxLevel > idx) {
+                if (idx == 0) {
+                    // 首次绘制根部
+                    curpoints = startPoint
+                    lastPoint = [startPoint[0], startPoint[1] - line]
+                    that.line({
+                        a: curpoints,
+                        b: lastPoint,
+                        color,
+                        line: 10 - idx
+                    })
+                    lastPoints.push(lastPoint)
+                } else {
+                    let newPoints = []
+                    // 分叉线
+                    lastPoints.forEach(item => {
+                        // 取出上次末尾节点作为本次起始节点
+                        curpoints = JSON.parse(JSON.stringify(item))
+                        color = getRandomColor()
+                        Array.from({ length: number }, (_, i) => {
+                            lastPoint = getPoint(curpoints[0], curpoints[1], getRandomAngle(), getRandomFrom())
+                            that.line({
+                                a: curpoints,
+                                b: lastPoint,
+                                color,
+                                line: 10 - idx * 2 + 1
+                            })
+                            newPoints.push(lastPoint)
+                        });
+                    })
+                    // 清除上次最后节点数据，并保存本次数据
+                    lastPoints = newPoints
+                }
+                idx++
+            }
+        }
+
+        canvas.render()
+        setInterval(() => {
+            idx = 0
+            canvas.render.apply(canvas)
+        }, 2000);
+    </script>
+</body>
+
+</html>

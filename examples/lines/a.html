@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            background-color: #333;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <script src="../../dist/canvas-utils.min.js"></script>
+    <script>
+        const canvas = new Canvas();
+       
+        const getPoint = (x, y, deg, lineLength=100) => {
+            return [x + Math.cos(deg) * lineLength, y + Math.sin(deg) * lineLength]
+        }
+
+        const getAngle = (num) => {
+            return Math.PI / 180 * num
+        }
+
+        let idx = 0, idx2 = 90,idx3 = 0, lineLength = 100, startPoint = [150, 150]
+        canvas.draw = function (_, ctx) {
+            this.drawGrid()
+
+            let point2 = getPoint(startPoint[0], startPoint[1], getAngle(idx), lineLength)
+            this.line({
+                a: startPoint,
+                b: point2,
+                color: '#fff',
+                line: 10
+            })
+
+            let point3 = getPoint(point2[0], point2[1], getAngle(idx2), lineLength / 2)
+            this.line({
+                a: point2,
+                b:  point3,
+                color: 'red',
+                line: 10
+            })
+
+            let point4 = getPoint(point3[0], point3[1], getAngle(idx3), lineLength / 3)
+            this.line({
+                a: point3,
+                b:  point4,
+                color: 'yellow',
+                line: 10
+            })
+        }
+
+        function ani() {
+            idx = idx > 360 ? 0 : idx + 1
+            idx2 = idx2 > 360 ? 0 : idx2 + 10
+            idx3 = idx3 > 360 ? 0 : idx3 + 20
+            canvas.clear()
+            canvas.render()
+
+            requestAnimationFrame(ani)
+        }
+        ani()
+    </script>
+</body>
+
+</html>

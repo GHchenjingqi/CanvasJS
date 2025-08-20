@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            background-color: #333;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <script src="../../dist/canvas-utils.min.js"></script>
+    <script>
+        const canvas = new Canvas();
+       
+        const getPoint = (x, y, deg, lineLength=100) => {
+            return [x + Math.cos(deg) * lineLength, y + Math.sin(deg) * lineLength]
+        }
+
+        const getRandomAngle = () => {
+            let num = Math.floor(Math.random() * 360)
+            return Math.PI / 180 * num
+        }
+        const getRandomFrom = (min=50, max=100) => {
+            return Math.random() * (max - min) + min
+        }
+        const getRandomColor = () => {
+            let r = Math.floor(Math.random() * 255)
+            let g = Math.floor(Math.random() * 255)
+            let b = Math.floor(Math.random() * 255)
+            return `rgb(${r}, ${g}, ${b})`
+        }
+
+        let line = 100
+        let point1 = [150, 150]
+
+        let pointList = [
+            { point: point1, line  },
+            { point: point1, line: getRandomFrom(),  }
+        ]
+        canvas.draw = function (_, ctx) {
+            this.drawGrid()
+            this.line({
+                a: [150, 400],
+                b: point1,
+                color: '#fff',
+                line: 10
+            })
+
+            let point2 = getPoint(point1[0], point1[1], getRandomAngle(), getRandomFrom())
+            this.line({
+                a: [150, 150],
+                b: point2,
+                color: getRandomColor(),
+                line: getRandomFrom(2,10)
+            })
+        }
+        
+        function ani() {
+            canvas.render()
+            requestAnimationFrame(ani)
+        }
+        ani()
+    </script>
+</body>
+
+</html>

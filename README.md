@@ -8,6 +8,8 @@ Support ESM, CJS, and IIFE.
 
 If you find it useful, please give me stars. I really hope to receive your suggestions or join in to make CanvasJS more compliant and user-friendly.
 
+Online demo: [https://ghchenjingqi.github.io/CanvasJS/](https://ghchenjingqi.github.io/CanvasJS/)
+
 NPM address: [https://www.npmjs.com/package/canvasbox](https://www.npmjs.com/package/canvasbox)
 
 Git address：[https://github.com/GHchenjingqi/CanvasJS](https://github.com/GHchenjingqi/CanvasJS)
